@@ -18,7 +18,6 @@ def create_index(input_dir: str = None, input_files: List[str] = None, save_dir=
     save_dir: str
         Directory to save the index.
     """
-
     llm = None
     if model_provider == 'groq':
         groq_key = os.environ['GROQ_KEY']
