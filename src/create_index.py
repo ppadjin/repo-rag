@@ -4,26 +4,47 @@ from llama_index.llms.groq import Groq
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.huggingface_api import HuggingFaceInferenceAPI
 from transformers import AutoTokenizer
+from typing import List
 
-repo_dir = os.getcwd()
+def create_index(input_dir: str = None, input_files: List[str] = None, save_dir='index', model_provider='groq'):
+    """
+    Create an index from a directory or a list of files. Saves the index for later.
 
-# Load documents
-documents = SimpleDirectoryReader('data').load_data()
+    input_dir: str
+        Directory containing the documents to be indexed.
+    input_files: List[str]
+        List of files to be indexed. If input_files is provided, input_dir is ignored.
+    save_dir: str
+        Directory to save the index.
+    """
 
-groq_key = os.environ['GROQ_KEY']
-llm = Groq(model="llama3-70b-8192", api_key=groq_key)
+    if not input_dir and not input_files:
+        raise ValueError("Either input_dir or input_files must be provided.")
+    
+    if input_dir and input_files:
+        input_dir = None
+        raise Warning("Both input_dir and input_files are provided. input_files will be used.")
 
-# Set up local embedding model
-embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
+    # Load documents
+    documents = SimpleDirectoryReader(input_dir=input_dir, input_files=input_files).load_data()
 
-Settings.llm = llm
-Settings.embed_model = embed_model
+    llm = None
+    if model_provider == 'groq':
+        groq_key = os.environ['GROQ_KEY']
+        llm = Groq(model="llama3-70b-8192", api_key=groq_key)
 
-# Create index
-index = VectorStoreIndex.from_documents(
-    documents=documents,
-    )
 
-# Save index
-save_dir = os.path.join(repo_dir, 'data', 'index')
-index.storage_context.persist(save_dir)
+    # Set up local embedding model
+    embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-base-en-v1.5")
+
+    Settings.llm = llm
+    Settings.embed_model = embed_model
+
+    # Create index
+    index = VectorStoreIndex.from_documents(
+        documents=documents,
+        )
+
+    # Save index
+    index.storage_context.persist(save_dir)
+    return index
