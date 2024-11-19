@@ -4,6 +4,7 @@ import time
 from git import Repo
 from st_pages import get_pages, get_script_run_ctx 
 from utils import get_relevant_files
+from extract_submodules import extract_submodule_files
 
 def load_github_files(repo_url):
     """
@@ -22,6 +23,8 @@ def load_github_files(repo_url):
 
     # get the relevant files
     relevant_files = get_relevant_files(repo_dir)
+    submodule_files = extract_submodule_files(repo_dir)
+    relevant_files.extend(submodule_files)
     save_dir = 'index/' + repo_name
     # create the index
     index = create_index(input_files=relevant_files, save_dir=save_dir, model_provider='groq')
