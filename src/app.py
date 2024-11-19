@@ -32,7 +32,7 @@ def load_github_files(repo_url):
 
 def main_page():
     st.set_page_config(page_title="Home", layout="wide")
-    st.title('Git repo buddy')
+    st.title('Github repo buddy')
     st.write('Setup the repo in minutes, not hours. Get all the help with installation and setup from buddy.')
     
     # app form
