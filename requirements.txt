@@ -1,4 +1,4 @@
-st_pages
+st_pages==0.5.0
 llama-index-core
 llama-index-embeddings-huggingface
 llama-index-llms-groq
