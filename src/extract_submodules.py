@@ -10,6 +10,10 @@ def extract_submodule_files(repo_path: str):
 
     submodules_file_path = os.path.join(repo_path, '.gitmodules')
 
+    # check if the .gitmodules file exists
+    if not os.path.exists(submodules_file_path):
+        return []
+
     submodules = []
     with open(submodules_file_path, 'r') as f:
         lines = f.readlines()
